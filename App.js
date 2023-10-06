@@ -6,6 +6,7 @@ import CadastroUsuarioScreen from "./screens/cadastro-usuario";
 import ListaContatosScreen from "./screens/lista-contatos";
 import CadastroContatoScreen from "./screens/cadastro-contato";
 import AlteracaoContatoScreen from "./screens/alteracao-contato";
+import EnviarImagemScreen from "./screens/enviar-imagem";
 
 const Stack = createNativeStackNavigator();
 
@@ -15,11 +16,12 @@ function App_movel({}) {
       <Stack.Navigator>
         <Stack.Screen
           options={{
-            headerShown:false
+            headerShown: false,
           }}
           name="Login"
           component={LoginScreen}
         />
+
         <Stack.Screen
           options={{
             title: "Usuário",
@@ -39,7 +41,26 @@ function App_movel({}) {
 
         <Stack.Screen
           options={{
-            headerShown:false,
+            title: "Imagem",
+            // headerShown: false,
+            title: "Envio de Imagem",
+            headerStyle: {
+              backgroundColor: "blue",
+            },
+            headerTintColor: "#ffffff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+              fontSize: 25,
+              textAlign: "center",
+            },
+          }}
+          name="EnviarImagem"
+          component={EnviarImagemScreen}
+        />
+
+        <Stack.Screen
+          options={{
+            headerShown: false,
             title: "Lista de Contatos",
             headerStyle: {
               backgroundColor: "blue",

@@ -127,6 +127,23 @@ function LoginScreen({ navigation }) {
           }}
           onPress={() => navigation.navigate("CadastroUsuario")}
         />
+
+        <Button
+          title="Enviar Imagem"
+          loading={false}
+          loadingProps={{ size: "small", color: "white" }}
+          buttonStyle={{
+            backgroundColor: "green",
+            borderRadius: 5,
+          }}
+          titleStyle={{ fontWeight: "bold", fontSize: 23 }}
+          containerStyle={{
+            marginHorizontal: 75,
+            height: 50,
+            marginVertical: 10,
+          }}
+          onPress={() => navigation.navigate("EnviarImagem")}
+        />
       </View>
     </View>
   );
