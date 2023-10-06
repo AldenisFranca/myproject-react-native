@@ -1,6 +1,10 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { useState } from "react";
 import { Input, Text, Button, Icon } from "react-native-elements";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 
 const styles = StyleSheet.create({
   container: {
@@ -10,6 +14,37 @@ const styles = StyleSheet.create({
 });
 
 function LoginScreen({ navigation }) {
+  const [email, setEmail] = useState([]);
+  const [senha, setSenha] = useState([]);
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBCkPtVh27HUSjAz7HTAEB19pb5TCVQ118",
+    authDomain: "aula-firebase-84fa2.firebaseapp.com",
+    projectId: "aula-firebase-84fa2",
+    storageBucket: "aula-firebase-84fa2.appspot.com",
+    messagingSenderId: "765546876167",
+    appId: "1:765546876167:web:10d45defe14cb2db7109a2",
+    measurementId: "G-KQSBSDRPP0",
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+
+  function Login() {
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, senha)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        navigation.navigate("ListaContatos");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+  }
+
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <View
@@ -33,9 +68,11 @@ function LoginScreen({ navigation }) {
           Email
         </Text>
         <Input
-        // containerStyle={{
-        //     marginVertical: 15,
-        //   }}
+          onChangeText={(text) => setEmail(text)}
+          value={email}
+          // containerStyle={{
+          //     marginVertical: 15,
+          //   }}
         />
 
         <Text
@@ -51,9 +88,11 @@ function LoginScreen({ navigation }) {
         </Text>
 
         <Input
-        //   containerStyle={{
-        //     marginVertical: 15,
-        //   }}
+          onChangeText={(text) => setSenha(text)}
+          value={senha}
+          //   containerStyle={{
+          //     marginVertical: 15,
+          //   }}
         />
         <Button
           title="Login"
@@ -70,7 +109,7 @@ function LoginScreen({ navigation }) {
             height: 50,
             marginVertical: 15,
           }}
-          onPress={() => navigation.navigate("ListaContatos")}
+          onPress={() => Login()}
         />
         <Button
           title="Cadastre-se"

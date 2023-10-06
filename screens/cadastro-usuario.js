@@ -1,8 +1,11 @@
 import React from "react";
 import axios from "axios";
 import { StyleSheet, View } from "react-native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Input, Text, Button } from "react-native-elements";
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 const styles = StyleSheet.create({
   container: {
@@ -12,29 +15,79 @@ const styles = StyleSheet.create({
 });
 
 const CadastroUsuarioScreen = ({ navigation }) => {
-  const [nome, setNome] = useState([]);
-  const [cpf, setCpf] = useState([]);
+  // const [nome, setNome] = useState([]);
+  // const [cpf, setCpf] = useState([]);
   const [email, setEmail] = useState([]);
   const [senha, setSenha] = useState([]);
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyBCkPtVh27HUSjAz7HTAEB19pb5TCVQ118",
+    authDomain: "aula-firebase-84fa2.firebaseapp.com",
+    projectId: "aula-firebase-84fa2",
+    storageBucket: "aula-firebase-84fa2.appspot.com",
+    messagingSenderId: "765546876167",
+    appId: "1:765546876167:web:10d45defe14cb2db7109a2",
+    measurementId: "G-KQSBSDRPP0",
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+
+  function loginGoogle() {
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+        navigation.navigate('ListaContatos')
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        const email = error.customData.email;
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+      });
+  }
+
   function inserirUsuario() {
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, senha)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        alert ("Contato Cadastrado com Sucesso")
+        navigation.navigate('Login')
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+      });
+  }
+
+  function inserirUsuario1() {
     axios
       .post("http://localhost:3000/usuario", {
-        nome: nome,
-        cpf: cpf,
+        // nome: nome,
+        // cpf: cpf,
         email: email,
-        senha: senha
+        senha: senha,
       })
       .then(function (response) {
-        alert ("Usuário Cadastrado com Sucesso")
-        navigation.navigate('Login')(response)
+        alert("Usuário Cadastrado com Sucesso");
+        navigation.navigate("Login")(response);
         console.log(response);
       })
       .catch(function (error) {
         console.log(error);
       });
   }
-
 
   return (
     <View
@@ -45,7 +98,7 @@ const CadastroUsuarioScreen = ({ navigation }) => {
         },
       ]}
     >
-      <Text
+      {/* <Text
         style={{
           fontWeight: 500,
           fontSize: 20,
@@ -69,7 +122,7 @@ const CadastroUsuarioScreen = ({ navigation }) => {
       >
         CPF
       </Text>
-      <Input onChangeText={(text) => setCpf(text)} value={cpf} />
+      <Input onChangeText={(text) => setCpf(text)} value={cpf} /> */}
 
       <Text
         style={{
@@ -98,7 +151,7 @@ const CadastroUsuarioScreen = ({ navigation }) => {
 
       <Button
         title="Salvar"
-        onPress={() => inserirUsuario() }
+        onPress={() => inserirUsuario()}
         loading={false}
         loadingProps={{ size: "small", color: "white" }}
         buttonStyle={{
@@ -111,7 +164,22 @@ const CadastroUsuarioScreen = ({ navigation }) => {
           height: 50,
           marginVertical: 40,
         }}
-        
+      />
+
+      <Button
+        title="Cadastro Google"
+        onPress={() => loginGoogle()}
+        loading={false}
+        loadingProps={{ size: "small", color: "white" }}
+        buttonStyle={{
+          backgroundColor: "blue",
+          borderRadius: 5,
+        }}
+        titleStyle={{ fontWeight: "bold", fontSize: 23 }}
+        containerStyle={{
+          marginHorizontal: 75,
+          height: 50
+        }}
       />
     </View>
   );
